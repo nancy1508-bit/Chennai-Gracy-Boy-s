@@ -1,20 +1,123 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chennai GRACY BOY’S - A to Z Event Management</title>
+    <title>Chennai GRACY BOY’S - Event Management</title>
+    <!-- SEO Meta Description -->
+    <meta name="description" content="Chennai GRACY BOY’S: Over 30 years of expertise in A to Z Event Management, including weddings, corporate shows, Chenda Melam, and Welcome Hostesses. Contact us for a flawless event!">
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chosen Palette: Warm Neutral Palette -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden; 
         }
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Playfair+Display:wght=700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Playfair+Display:wght{700}&display=swap');
         h1, h2, h3 {
             font-family: 'Playfair Display', serif;
         }
-        /* Fade-in for smooth scrolling visibility */
+        
+        /* Utility class to hide sections managed by JS router */
+        .page-section {
+            display: none;
+            min-height: 80vh; /* Ensure sections have height even on initial hide */
+        }
+
+        /* Styling for sticky header offset */
+        section {
+            padding-top: 5rem; /* Add consistent padding for page content */
+            padding-bottom: 5rem;
+        }
+        #home {
+            padding-top: 0; /* Home hero is full screen */
+            padding-bottom: 0;
+        }
+
+        /* Hero Video Background Container Styles */
+        #video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1; /* Place behind content */
+        }
+        
+        #video-background {
+            /* Ensures the video covers the whole container */
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Scale down small video on huge screens, but prioritize cover */
+            object-fit: cover; 
+        }
+
+        /* Service Card Video Background Styles */
+        .service-card {
+            position: relative;
+            overflow: hidden; /* Crucial to contain the video */
+            background-color: #fff; /* Fallback */
+            border-radius: 0.5rem; /* Tailwind 'rounded-lg' equivalent */
+        }
+
+        .service-video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Behind content, above card bg */
+        }
+        
+        .service-video-container video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        .service-content-overlay {
+            position: relative;
+            z-index: 2; /* Above video */
+            background-color: rgba(0, 0, 0, 0.45); /* Dark overlay for readability */
+            color: white; /* Ensure text is white over dark overlay */
+            padding: 2rem; /* Tailwind 'p-8' equivalent */
+            height: 100%;
+            min-height: 250px; /* Ensure cards have a minimum height */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .service-card:hover .service-content-overlay {
+            background-color: rgba(120, 53, 15, 0.7); /* Hover effect using amber-900 transparent */
+        }
+
+
+        /* Detail Expertise Card Styling (Used for the dedicated page content) */
+        .expertise-card {
+            /* Using the amber/stone theme for the detail card */
+            background: linear-gradient(135deg, #44403c 0%, #292524 50%, #44403c 100%);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease-in-out;
+            color: #d6d3d1; /* Stone-300 equivalent for text on dark background */
+        }
+        .expertise-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Fade-in for smooth visibility transition */
         .fade-in {
             opacity: 0;
             transform: translateY(20px);
@@ -23,6 +126,20 @@
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -38,13 +155,15 @@
     <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm transition-all duration-300">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
+                <!-- Anchor tag to root page -->
                 <a href="#home" class="text-2xl font-bold text-amber-900">CHENNAI GRACY BOY’S</a>
                 <nav class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-stone-600 hover:text-amber-800 transition">Home</a>
-                    <a href="#about" class="text-stone-600 hover:text-amber-800 transition">About</a>
-                    <a href="#services" class="text-stone-600 hover:text-amber-800 transition">Services</a>
-                    <a href="#gallery" class="text-stone-600 hover:text-amber-800 transition">Gallery</a>
-                    <a href="#why-us" class="text-stone-600 hover:text-amber-800 transition">Why Us</a>
+                    <!-- Navigation links use #hash for routing -->
+                    <a href="#home" class="nav-link text-stone-600 hover:text-amber-800 transition">Home & About</a>
+                    <a href="#services" class="nav-link text-stone-600 hover:text-amber-800 transition">Services</a>
+                    <a href="#testimonials" class="nav-link text-stone-600 hover:text-amber-800 transition">Testimonials</a>
+                    <a href="#gallery" class="nav-link text-stone-600 hover:text-amber-800 transition">Gallery</a>
+                    <a href="#why-us" class="nav-link text-stone-600 hover:text-amber-800 transition">Why Us</a>
                 </nav>
                 <a href="#contact" class="hidden md:inline-block bg-amber-800 text-white px-5 py-2 rounded-full hover:bg-amber-900 transition shadow">Contact Us</a>
                 <button id="mobile-menu-button" class="md:hidden text-stone-800">
@@ -54,28 +173,56 @@
         </div>
         <!-- Mobile Menu Dropdown -->
         <div id="mobile-menu" class="hidden md:hidden bg-white">
-            <a href="#home" class="block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Home</a>
-            <a href="#about" class="block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">About</a>
-            <a href="#services" class="block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Services</a>
-            <a href="#gallery" class="block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Gallery</a>
-            <a href="#why-us" class="block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Why Us</a>
-            <a href="#contact" class="block text-center py-4 px-6 bg-amber-800 text-white hover:bg-amber-900">Contact Us</a>
+            <a href="#home" class="mobile-nav-link block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Home & About</a>
+            <a href="#services" class="mobile-nav-link block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Services</a>
+            <a href="#testimonials" class="mobile-nav-link block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Testimonials</a>
+            <a href="#gallery" class="mobile-nav-link block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Gallery</a>
+            <a href="#why-us" class="mobile-nav-link block text-center py-3 px-6 text-stone-600 hover:bg-stone-100">Why Us</a>
+            <a href="#contact" class="mobile-nav-link block text-center py-4 px-6 bg-amber-800 text-white hover:bg-amber-900">Contact Us</a>
         </div>
     </header>
 
-    <main>
-        <!-- Hero Section -->
-        <section id="home" class="min-h-[90vh] flex items-center bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/F5F5DC/333333?text=Event+Excellence');">
-            <div class="bg-black/50 w-full h-full min-h-[90vh] flex items-center justify-center">
-                <div class="text-center text-white px-4 fade-in">
-                    <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-4">Chennai GRACY BOY’S</h1>
-                    <p class="text-xl md:text-2xl font-light">A to Z Event Management: Crafting Unforgettable Experiences.</p>
-                </div>
+    <main id="app-content">
+
+        <!-- Home Section (Unified Hero Section - VISIBLE ONLY ON HOME/ABOUT PAGE) -->
+        <section id="home" class="relative w-full h-screen overflow-hidden page-section">
+            
+            <!-- Fullscreen Background Video -->
+            <video 
+                autoplay 
+                loop 
+                muted 
+                playsinline 
+                src="https://videos.pexels.com/video-files/13054630/13054630-hd_1920_1080_30fps.mp4"
+                poster="https://placehold.co/1920x1080/4F46E5/ffffff?text=Video+Loading..."
+                onerror="this.onerror=null; this.poster='https://placehold.co/1920x1080/4F46E5/ffffff?text=Video+Unavailable'"
+                class="absolute inset-0 w-full h-full object-cover"
+            >
+                Your browser does not support the video tag.
+            </video>
+
+            <!-- Dark Overlay for Readability -->
+            <div class="absolute inset-0 bg-black/50"></div>
+
+            <!-- Hero Content (Text and Button) -->
+            <div class="relative z-10 flex flex-col items-center justify-center text-center text-white h-full px-4">
+                <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-4 drop-shadow-lg fade-in">
+                    Chennai GRACY BOY’S
+                </h1>
+                <p class="text-xl md:text-2xl font-light drop-shadow-md fade-in" style="transition-delay: 100ms;">
+                    A to Z Event Management: Crafting Unforgettable Experiences.
+                </p>
+                <a href="#contact" 
+                   class="mt-8 inline-block bg-amber-800 text-white px-8 py-3 rounded-full 
+                        hover:bg-amber-900 transition shadow-lg text-lg transform hover:scale-105 fade-in" style="transition-delay: 200ms;">
+                    Get a Free Quote Now
+                </a>
             </div>
+
         </section>
 
-        <!-- About Us Section -->
-        <section id="about" class="py-20 md:py-32">
+        <!-- About Us Section (Visible on default/home page) -->
+        <section id="about" class="page-section">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16 fade-in">
                     <h2 class="text-4xl font-bold text-amber-900 mb-4">Who We Are</h2>
@@ -105,139 +252,559 @@
             </div>
         </section>
 
-        <!-- Services Section -->
-        <section id="services" class="py-20 md:py-32 bg-stone-100">
+        <!-- Services Section (Opens as a separate "page") -->
+        <section id="services" class="page-section bg-stone-100">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16 fade-in">
                     <h2 class="text-4xl font-bold text-amber-900 mb-4">Our Services & Expertise</h2>
                     <p class="text-lg text-stone-600 max-w-3xl mx-auto">Explore our comprehensive suite of services designed to cover every detail of your event. From initial concept development to final execution, we offer wide-ranging capabilities.</p>
                 </div>
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Core Services -->
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in">
-                        <div class="text-4xl mb-4">🎤</div>
-                        <h3 class="text-xl font-bold mb-2">Event Planning & Concept</h3>
-                        <p class="text-stone-600">Creative themes, concepts, and complete event roadmaps.</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 100ms;">
-                        <div class="text-4xl mb-4">🏢</div>
-                        <h3 class="text-xl font-bold mb-2">Venue Selection & Décor</h3>
-                        <p class="text-stone-600">Identifying the right venue and designing stunning décor.</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 200ms;">
-                        <div class="text-4xl mb-4">🎇</div>
-                        <h3 class="text-xl font-bold mb-2">Stage, Lighting & Sound</h3>
-                        <p class="text-stone-600">Professional setup for seamless event execution.</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 300ms;">
-                        <div class="text-4xl mb-4">🎶</div>
-                        <h3 class="text-xl font-bold mb-2">Entertainment & Artists</h3>
-                        <p class="text-stone-600">DJs, live bands, celebrity appearances, and performers.</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 400ms;">
-                        <div class="text-4xl mb-4">📸</div>
-                        <h3 class="text-xl font-bold mb-2">Photo & Videography</h3>
-                        <p class="text-stone-600">Capturing every moment with high-quality coverage.</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 500ms;">
-                        <div class="text-4xl mb-4">📢</div>
-                        <h3 class="text-xl font-bold mb-2">Marketing & Promotions</h3>
-                        <p class="text-stone-600">Promotions, publicity, and brand awareness campaigns.</p>
-                    </div>
-
-                    <!-- Specialized Services -->
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 600ms;">
-                        <div class="text-4xl mb-4">💁‍♀️</div>
-                        <h3 class="text-xl font-bold mb-2">Welcome Hostesses (Welcome Girls)</h3>
-                        <p class="text-stone-600">Professional hostesses for VIP guest reception, guidance, and event assistance.</p>
-                    </div>
                     
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 700ms;">
-                        <div class="text-4xl mb-4">💃</div>
-                        <h3 class="text-xl font-bold mb-2">Grand Welcome Dance Performances</h3>
-                        <p class="text-stone-600">Coordinated dance troupes to welcome guests at entrances for all types of events.</p>
-                    </div>
+                    <!-- Core Services -->
+                    <!-- 1. Event Planning & Concept -->
+                    <a href="#services-planning" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in">
+                        <!-- Video Container -->
+                        <div class="service-video-container">
+                            <video autoplay loop muted playsinline>
+                                <source src="https://videos.pexels.com/video-files/7947454/7947454-hd_1920_1080_30fps.mp4" type="video/mp4" onerror="this.parentElement.style.display='none'">
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">📋</div>
+                            <h3 class="text-xl font-bold mb-2">Event Planning & Concept</h3>
+                            <p class="text-stone-200">Creative themes, concepts, and complete event roadmaps.</p>
+                        </div>
+                    </a>
+                    
+                    <!-- 2. Venue Selection & Décor -->
+                    <a href="#services-venue" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 100ms;">
+                        <!-- Video Container -->
+                        <div class="service-video-container">
+                           <video 
+                            autoplay 
+                            loop 
+                            muted 
+                            playsinline 
+                            src="https://www.pexels.com/download/video/11918060/"
+                            poster="https://placehold.co/600x400/06B6D4/ffffff?text=Venue+Setup" 
+                            onerror="this.parentElement.style.display='none'"
+                        >
+                            Your browser does not support the video tag.
+                        </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">🏛️</div>
+                           <h3 class="text-xl font-bold mb-2">Venue Selection & Décor</h3>
+                            <p class="text-stone-200">Identifying the right venue and designing stunning décor.</p>
+                        </div>
+                    </a>
+                    
+                    <!-- 3. Stage, Lighting & Sound -->
+                    <a href="#services-staging" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 200ms;">
+                        <!-- Video Container -->
+                        <div class="service-video-container">
+                           <video 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                src="https://www.pexels.com/download/video/4916813/"
+                                poster="https://placehold.co/600x400/18181b/ffffff?text=Stage+Light" 
+                                onerror="this.parentElement.style.display='none'"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">🎇</div>
+                            <h3 class="text-xl font-bold mb-2">Stage, Lighting & Sound</h3>
+                            <p class="text-stone-200">Professional setup for seamless event execution.</p>
+                        </div>
+                    </a>
 
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 800ms;">
-                        <div class="text-4xl mb-4">👮‍♂️</div>
-                        <h3 class="text-xl font-bold mb-2">Trained Security Staff & Bouncers</h3>
-                        <p class="text-stone-600">Ensuring guest safety, crowd management, and maintaining order throughout your event.</p>
-                    </div>
+                    <!-- 4. Entertainment & Artists -->
+                    <a href="#services-entertainment" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 300ms;">
+                        <!-- Video Container -->
+                        <div class="service-video-container">
+                           <video 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                src="https://www.pexels.com/download/video/9003398/"
+                                poster="https://placehold.co/600x400/06B6D4/ffffff?text=Entertainment" 
+                                onerror="this.parentElement.style.display='none'"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">🎶</div>
+                            <h3 class="text-xl font-bold mb-2">Entertainment & Artists</h3>
+                            <p class="text-stone-200">DJs, live bands, celebrity appearances, and performers.</p>
+                        </div>
+                    </a>
+                    
+                    <!-- 5. Photo & Videography -->
+                    <a href="#services-photo" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 400ms;">
+                        <!-- Video Container -->
+                        <div class="service-video-container">
+                           <video 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                src="https://www.pexels.com/download/video/1998560/"
+                                poster="https://placehold.co/600x400/71717A/ffffff?text=Photography" 
+                                onerror="this.parentElement.style.display='none'"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">📸</div>
+                            <h3 class="text-xl font-bold mb-2">Photo & Videography</h3>
+                            <p class="text-stone-200">Capturing every moment with high-quality coverage.</p>
+                        </div>
+                    </a>
 
-                    <!-- Chenda Melam Service -->
-                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 900ms;">
-                        <div class="text-4xl mb-4">🥁</div>
-                        <h3 class="text-xl font-bold mb-2">Chenda Melam (Traditional Percussion)</h3>
-                        <p class="text-stone-600">The powerful, majestic drum ensemble perfect for traditional wedding processions and grand event inaugurations.</p>
+                    <!-- 6. Marketing & Promotions -->
+                    <a href="#services-marketing" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 500ms;">
+                        <!-- Video Container -->
+                        <div class="service-video-container">
+                           <video 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                src="https://www.pexels.com/download/video/7054949/"
+                                poster="https://placehold.co/600x400/71717A/ffffff?text=Marketing" 
+                                onerror="this.parentElement.style.display='none'"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">📢</div>
+                            <h3 class="text-xl font-bold mb-2">Marketing & Promotions</h3>
+                            <p class="text-stone-200">Promotions, publicity, and brand awareness campaigns.</p>
+                        </div>
+                    </a>
+
+                    <!-- 7. Welcome Hostesses (Welcome Girls) -->
+                    <a href="#services-hostesses" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 600ms;">
+                        <!-- Video Container (using a different video for variety) -->
+                        <div class="service-video-container">
+                           <video 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                src="https://www.pexels.com/download/video/5897816/"
+                                poster="https://placehold.co/600x400/57534E/ffffff?text=Hostesses" 
+                                onerror="this.parentElement.style.display='none'"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">💁‍♀️</div>
+                            <h3 class="text-xl font-bold mb-2">Welcome Hostesses (Welcome Girls)</h3>
+                            <p class="text-stone-200">Professional hostesses for VIP guest reception, guidance, and event assistance.</p>
+                        </div>
+                    </a>
+                    
+                    <!-- 8. Grand Welcome Dance Performances -->
+                    <a href="#services-dance" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 700ms;">
+                        <!-- Video Container (using a different video for variety) -->
+                        <div class="service-video-container">
+                           <video 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                src="https://www.pexels.com/download/video/26860019/"
+                                poster="https://placehold.co/600x400/57534E/ffffff?text=Welcome+Dance" 
+                                onerror="this.parentElement.style.display='none'"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">💃</div>
+                            <h3 class="text-xl font-bold mb-2">Grand Welcome Dance Performances</h3>
+                            <p class="text-stone-200">Coordinated dance troupes to welcome guests at entrances for all types of events.</p>
+                        </div>
+                    </a>
+
+                    <!-- 9. Trained Security Staff & Bouncers (NOW A LINK TO DETAIL PAGE) -->
+                    <a href="#services-security" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 800ms;">
+                         <!-- Video Container -->
+                        <div class="service-video-container">
+                           <video 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                src="https://www.pexels.com/download/video/7714003/"
+                                poster="https://placehold.co/600x400/57534E/ffffff?text=Security+Staff" 
+                                onerror="this.parentElement.style.display='none'"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                            <div class="text-4xl mb-4">👮‍♂️</div>
+                            <h3 class="text-xl font-bold mb-2">Trained Security Staff & Bouncers</h3>
+                            <p class="text-stone-200">Ensuring guest safety, crowd management, and maintaining order throughout your event.</p>
+                        </div>
+                    </a>
+
+                    <!-- 10. Chenda Melam Service (NOW A LINK TO DETAIL PAGE) -->
+                    <a href="#services-chenda" class="service-card rounded-lg shadow-md hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 fade-in" style="transition-delay: 900ms;">
+                        <!-- Video Container -->
+                        <div class="service-video-container">
+                           <video 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                src="https://www.pexels.com/download/video/9467624/"
+                                poster="https://placehold.co/600x400/57534E/ffffff?text=Chenda+Melam" 
+                                onerror="this.parentElement.style.display='none'"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <!-- Content Overlay -->
+                        <div class="service-content-overlay">
+                             <div class="text-4xl mb-4">🥁</div>
+                            <h3 class="text-xl font-bold mb-2">Chenda Melam (Traditional Percussion)</h3>
+                            <p class="text-stone-200">The powerful, majestic drum ensemble perfect for traditional wedding processions and grand event inaugurations.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Detailed Service Pages (All use the same layout and class for consistency) -->
+        
+        <section id="services-planning" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Event Planning & Concept Development</h2>
+                    <p class="text-lg text-stone-300 mb-8">This is where the magic begins. We don't just manage events; we design them from the ground up to reflect your unique vision.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">The Process</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>Initial Consultation: Deep dive into your goals, budget, and desired atmosphere.</li>
+                                <li>Creative Conceptualization: Developing a unique, cohesive theme and design.</li>
+                                    <li>Detailed Blueprint: Creating comprehensive floor plans, timelines, and logistical maps.</li>
+                                <li>Vendor Management: Negotiating and coordinating with top suppliers and artists.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Expertise Highlights</h3>
+                            <p class="text-stone-300">Our 30+ years of experience ensures we anticipate challenges before they arise. We offer complete **A to Z planning**, taking the stress out of your hands. We specialize in culturally rich and logistically complex events.</p>
+                            <a href="#contact" class="mt-6 inline-block bg-amber-600 text-white px-6 py-2 rounded-full hover:bg-amber-700 transition shadow-lg">Plan Your Event</a>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="text-center mt-16 fade-in">
-                    <h3 class="text-3xl font-bold text-amber-900 mb-6">We Specialize In...</h3>
-                    <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-stone-600">
-                        <span class="bg-white px-4 py-2 rounded-full shadow-sm">Corporate Functions</span>
-                        <span class="bg-white px-4 py-2 rounded-full shadow-sm">Weddings & Parties</span>
-                        <span class="bg-white px-4 py-2 rounded-full shadow-sm">Cultural Programs</span>
-                        <span class="bg-white px-4 py-2 rounded-full shadow-sm">Fashion Shows</span>
-                        <span class="bg-white px-4 py-2 rounded-full shadow-sm">Live Concerts</span>
-                        <span class="bg-white px-4 py-2 rounded-full shadow-sm">Product Launches</span>
-                        <span class="bg-white px-4 py-2 rounded-full shadow-sm">Look Alike Artist</span>
+            </div>
+        </section>
+
+        <section id="services-venue" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Venue Selection & Transformative Décor</h2>
+                    <p class="text-lg text-stone-300 mb-8">Finding the perfect canvas and painting it with breathtaking designs. We transform spaces to embody your event's theme and scale.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Venue Logistics</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>Site Inspection: Detailed analysis of capacity, acoustics, and accessibility.</li>
+                                <li>Negotiation: Securing the best rates and terms for your chosen location.</li>
+                                <li>Permits & Compliance: Handling all necessary permissions required in the region.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Décor Mastery</h3>
+                            <p class="text-stone-300">From grand floral arrangements to bespoke lighting installations, our decor team delivers ambiance. We work with both traditional and modern designs, ensuring the aesthetic perfectly complements the event type, be it a corporate seminar or a traditional South Indian wedding.</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Past Important Event Highlights -->
-                <div class="text-center mt-24 fade-in">
-                    <h3 class="text-3xl font-bold text-amber-900 mb-8">🎤 Past Important Event Highlights</h3>
-                    <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 text-left">
-                        <!-- Event 1 -->
-                        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500 hover:shadow-xl transition-shadow duration-300">
-                            <h4 class="text-xl font-bold text-stone-800 mb-1">Ilaiyaraja – Karur Isai Rajangam Show</h4>
-                            <p class="text-stone-600">A grand musical event celebrating Maestro Ilaiyaraja’s timeless compositions with a massive audience turnout.</p>
+        <section id="services-staging" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Professional Stage, Lighting & Sound</h2>
+                    <p class="text-lg text-stone-300 mb-8">Technical excellence is non-negotiable. We deliver flawless audio-visual experiences that amplify the impact of every performance and presentation.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Technical Specs</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>State-of-the-Art Sound: Line arrays and premium mixing consoles for crystal-clear audio.</li>
+                                <li>Dynamic Lighting: Intelligent lighting systems (DMX), moving heads, and mood lighting.</li>
+                                <li>Custom Staging: Building robust, customized stages and backdrops for any venue.</li>
+                            </ul>
                         </div>
-                        <!-- Event 2 -->
-                        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500 hover:shadow-xl transition-shadow duration-300">
-                            <h4 class="text-xl font-bold text-stone-800 mb-1">Chinna Kuyil Chitra Show</h4>
-                            <p class="text-stone-600">A soulful live performance by legendary playback singer K.S. Chithra, featuring her most loved hits.</p>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">The Gracy Boy's Difference</h3>
+                            <p class="text-stone-300">Our in-house technical crew manages all aspects from setup to strike, including rigging and power distribution. This single point of contact minimizes technical hiccups, allowing you to focus on your event’s core purpose.</p>
                         </div>
-                        <!-- Event 3 -->
-                        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500 hover:shadow-xl transition-shadow duration-300">
-                            <h4 class="text-xl font-bold text-stone-800 mb-1">Lions Club Corporate Show</h4>
-                            <p class="text-stone-600">A prestigious corporate cultural program organized for Lions Club members and guests.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services-entertainment" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Entertainment Booking & Artist Management</h2>
+                    <p class="text-lg text-stone-300 mb-8">We connect you with the best performers to elevate the mood, from high-energy DJs to celebrated classical artists and celebrity guests.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Artist Roster</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>Live Music: Bands, orchestras, and traditional Indian musical troupes.</li>
+                                <li>Celebrity Coordination: Managing appearances and hospitality for public figures.</li>
+                                <li>Specialty Acts: Magicians, stand-up comedians, and unique cultural performances.</li>
+                            </ul>
                         </div>
-                        <!-- Event 4 -->
-                        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500 hover:shadow-xl transition-shadow duration-300">
-                            <h4 class="text-xl font-bold text-stone-800 mb-1">Dubai Tamil Sangam Show</h4>
-                            <p class="text-stone-600">An international musical evening in Dubai showcasing Tamil music and culture to a global audience.</p>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Logistics & Rider Management</h3>
+                            <p class="text-stone-300">We handle complex artist riders, travel, accommodation, and technical requirements, ensuring every performer is ready and satisfied, guaranteeing a smooth show flow.</p>
                         </div>
-                        <!-- Event 5 -->
-                        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500 hover:shadow-xl transition-shadow duration-300">
-                            <h4 class="text-xl font-bold text-stone-800 mb-1">Malaysia Tamil Sangam Show</h4>
-                            <p class="text-stone-600">A vibrant event highlighting Tamil arts and performances for the Malaysian Tamil community.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services-photo" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Professional Photo & Videography</h2>
+                    <p class="text-lg text-stone-300 mb-8">Preserving your memories in stunning high-definition. Our team of experienced visual storytellers ensures every laugh, dance, and milestone is captured perfectly.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Our Packages Include</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>Candid & Traditional Photography: Covering both formal and spontaneous moments.</li>
+                                <li>Cinematic Videography: High-quality, story-driven event films and highlights.</li>
+                                <li>Drone Coverage: Stunning aerial views for large outdoor venues and grand entrances.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Modern Deliverables</h3>
+                            <p class="text-stone-300">We provide fast delivery of edited photos, customized photo albums, and digital distribution of high-resolution video content, tailored for both web and print use.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services-marketing" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Marketing, Promotions & Branding</h2>
+                    <p class="text-lg text-stone-300 mb-8">For corporate and public events, we ensure maximum visibility. We handle all pre- and post-event communication and media engagement.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Promotion Strategy</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>PR & Media Relations: Press release distribution and media coordination.</li>
+                                <li>Digital Campaigns: Social media teasers, live updates, and targeted advertising.</li>
+                                <li>Branding & Signage: Designing all event collateral, backdrops, and wayfinding signage.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Audience Engagement</h3>
+                            <p class="text-stone-300">From managing ticket sales to executing effective post-event surveys, we help you connect with your audience and measure the success and reach of your public gathering.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- Gallery Section -->
-        <section id="gallery" class="py-20 md:py-32 bg-stone-50">
-            <div class="container mx-auto px-6 text-center fade-in">
-                <h2 class="text-4xl font-bold text-amber-900 mb-4">Our Event Gallery</h2>
-                <p class="text-lg text-stone-600 max-w-3xl mx-auto mb-10">Explore the moments we’ve crafted! Click below to view our comprehensive portfolio of past corporate functions, weddings, concerts, and themed parties on Google Drive.</p>
-                <a href="https://drive.google.com/drive/folders/1gKgymULQMeeoKZnX7_Vt7dNUL0XDyUtA?usp=drive_link" target="_blank" class="inline-flex items-center bg-amber-800 text-white text-xl font-semibold px-8 py-4 rounded-full hover:bg-amber-900 transition shadow-xl transform hover:scale-105 duration-300">
-                    <span class="mr-3 text-2xl">📷</span> View Full Portfolio on Google Drive
-                </a>
-                
+        <section id="services-hostesses" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Premium Welcome Hostesses (Welcome Girls)</h2>
+                    <p class="text-lg text-stone-300 mb-8">Providing a warm, professional first impression. Our trained hostesses enhance the elegance and efficiency of your VIP reception areas.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Key Duties</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>Guest Reception: Greeting and welcoming guests with professionalism.</li>
+                                <li>Registration & Badging: Handling smooth and quick check-in processes.</li>
+                                <li>Directional Assistance: Guiding guests to key areas (hall, restrooms, dining).</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Trained Professionalism</h3>
+                            <p class="text-stone-300">All our hostesses are meticulously trained in etiquette, crowd management, and multilingual communication, ensuring a flawless and friendly guest experience from arrival to departure.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Why Choose Us Section -->
-        <section id="why-us" class="py-20 md:py-32">
+        <section id="services-dance" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Grand Welcome Dance Performances</h2>
+                    <p class="text-lg text-stone-300 mb-8">Create an immediate sense of grandeur and celebration with choreographed dance troupes performing dazzling welcome routines at your event entrance.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Performance Types</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>Traditional: Classical Indian forms for weddings and cultural festivals.</li>
+                                <li>Contemporary: Modern and fusion routines for corporate parties and launches.</li>
+                                <li>Custom Choreography: Routines tailored to your event's specific music and theme.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">High-Impact Entrances</h3>
+                            <p class="text-stone-300">This service is designed to be the ultimate show-stopper, setting a high-energy, positive tone for the entire event. We handle all costume design, music editing, and logistics for the dancers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- NEW SERVICE DETAIL: Trained Security Staff & Bouncers -->
+        <section id="services-security" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Trained Security Staff & Professional Bouncers</h2>
+                    <p class="text-lg text-stone-300 mb-8">Safety is paramount. We provide professional, discreet, and highly trained security personnel to ensure the complete safety and smooth flow of your event, regardless of size or complexity.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Security Capabilities</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>Access Control: Managing entry and exit points and verifying guest lists.</li>
+                                <li>Crowd Management: Discreetly controlling guest movement and managing large gatherings.</li>
+                                <li>VIP Protection: Personal security details for high-profile guests or sensitive areas.</li>
+                                <li>Emergency Response: Trained staff ready to handle medical or safety emergencies swiftly.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">Our Commitment to Discretion</h3>
+                            <p class="text-stone-300">Our security teams are professional and focus on prevention rather than reaction. They integrate seamlessly into your event environment, maintaining a welcoming atmosphere while ensuring a secure perimeter and high level of guest conduct. We perform detailed pre-event risk assessments for every venue.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW SERVICE DETAIL: Chenda Melam (Traditional Percussion) -->
+        <section id="services-chenda" class="page-section bg-stone-50">
+            <div class="container mx-auto px-6">
+                <a href="#services" class="text-amber-800 hover:text-amber-900 transition mb-6 block text-lg fade-in">← Back to All Services</a>
+                <div class="expertise-card p-10 lg:p-16 rounded-xl fade-in" style="transition-delay: 100ms;">
+                    <h2 class="text-4xl font-bold mb-4 text-white">Chenda Melam (Traditional Percussion Ensemble)</h2>
+                    <p class="text-lg text-stone-300 mb-8">Bring the majestic sound of South India to your event. The Chenda Melam ensemble provides a powerful and authentic cultural welcome, perfect for grand entrances and ceremonial beginnings.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4">A Grand Cultural Experience</h3>
+                            <ul class="list-disc list-inside space-y-3 text-stone-300 ml-4">
+                                <li>Authentic Troupes: Featuring highly trained, professional percussionists.</li>
+                                <li>The Sound: Ranging from the intense, rapid beats of the `Chenda` to the rhythmic melody of the `Kuzhal`.</li>
+                                <li>Best For: Wedding processions (Baraat), corporate inaugurations, festival celebrations, and temple events.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-4"> Presentation</h3>
+                            <p class="text-stone-300">We manage the complete coordinating the troop's travel, elaborate costume, and timing the performance perfectly with your guest arrivals or ceremonial procedures. This is a high-impact, culturally significant service that guarantees a memorable start to any grand occasion.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="page-section bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16 fade-in">
-                    <h2 class="text-4xl font-bold text-amber-900 mb-4">Why Choose Us?</h2>
-                    <p class="text-lg text-stone-600 max-w-3xl mx-auto">Discover the key advantages of partnering with us. This section outlines the core principles and strengths that set us apart, ensuring your event is not just successful, but truly exceptional.</p>
+                    <h2 class="text-4xl font-bold text-amber-900 mb-4">Client Success Stories</h2>
+                    <p class="text-lg text-stone-600 max-w-3xl mx-auto">Hear directly from the clients who trusted Chennai GRACY BOY’S to manage their most important events.</p>
                 </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1: Wedding -->
+                    <div class="bg-stone-50 p-8 rounded-xl shadow-lg border-t-4 border-amber-800 fade-in">
+                        <p class="text-4xl text-amber-500 mb-4">“</p>
+                        <p class="text-stone-700 italic mb-6">"The wedding planning was seamless, from the stunning floral mandap to the punctual Chenda Melam entrance. They handled every traditional detail with modern precision. Flawless execution!"</p>
+                        <div class="font-bold text-amber-800">- Rajkumar & Pooja</div>
+                        <div class="text-sm text-stone-500">Traditional Wedding, Chennai</div>
+                    </div>
+                    
+                    <!-- Testimonial 2: Corporate -->
+                    <div class="bg-stone-50 p-8 rounded-xl shadow-lg border-t-4 border-amber-800 fade-in" style="transition-delay: 150ms;">
+                        <p class="text-4xl text-amber-500 mb-4">“</p>
+                        <p class="text-stone-700 italic mb-6">"For our annual conference, the stage, lighting, and sound quality were top-notch. The hostesses were professional and efficiently managed our VIP registration. Highly recommended for corporate events."</p>
+                        <div class="font-bold text-amber-800">- Anand S.</div>
+                        <div class="text-sm text-stone-500">Tech Conference Organizer</div>
+                    </div>
+                    
+                    <!-- Testimonial 3: Birthday/Private -->
+                    <div class="bg-stone-50 p-8 rounded-xl shadow-lg border-t-4 border-amber-800 fade-in" style="transition-delay: 300ms;">
+                        <p class="text-4xl text-amber-500 mb-4">“</p>
+                        <p class="text-stone-700 italic mb-6">"We gave them a simple theme, and they transformed our backyard into a carnival! The entertainment was brilliant, and their security team made sure everyone felt safe. Best 50th birthday party ever."</p>
+                        <div class="font-bold text-amber-800">- Mrs. Lalitha R.</div>
+                        <div class="text-sm text-stone-500">Private Celebration, ECR</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="page-section bg-stone-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="text-4xl font-bold text-amber-900 mb-4">Our Portfolio: Moments We've Crafted</h2>
+                    <p class="text-lg text-stone-600 max-w-3xl mx-auto">A glimpse into the diverse range of events we've brought to life—from grand corporate stages to intimate, beautiful weddings.</p>
+                </div>
+                
+              
+                <div class="text-center mt-12 fade-in" style="transition-delay: 800ms;">
+                    <a href="https://drive.google.com/drive/folders/1gKgymULQMeeoKZnX7_Vt7dNUL0XDyUtA?usp=drive_link" target="_blank" class="inline-flex items-center bg-amber-800 text-white text-xl font-semibold px-8 py-4 rounded-full hover:bg-amber-900 transition shadow-xl transform hover:scale-105 duration-300">📷 View Full Portfolio on Google Drive</a> 
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Us Section -->
+        <section id="why-us" class="page-section bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="text-4xl font-bold text-amber-900 mb-4">Why Choose Chennai GRACY BOY’S?</h2>
+                    <p class="text-lg text-stone-600 max-w-3xl mx-auto">We offer reliability, deep local expertise, and a commitment to perfection that few can match.</p>
+                </div>
+                
                 <div class="max-w-4xl mx-auto space-y-8">
                     <div class="flex items-start space-x-6 bg-white p-6 rounded-lg shadow-sm fade-in">
                         <div class="text-3xl font-bold text-amber-800">1.</div>
@@ -289,178 +856,345 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="text-center mt-16 fade-in" style="transition-delay: 450ms;">
+                    <p class="text-2xl font-semibold text-stone-700">Ready to discuss your vision? <a href="#contact" class="text-amber-800 hover:underline">Contact us today.</a></p>
+                </div>
             </div>
         </section>
-    </main>
 
-    <!-- Footer & Contact Form Section -->
-    <footer id="contact" class="bg-stone-800 text-white">
-        <div class="container mx-auto px-6 py-16">
-            <div class="text-center mb-10 fade-in">
-                <h2 class="text-4xl font-bold mb-4">Let's Create Something Memorable</h2>
-                <p class="text-lg text-stone-300 max-w-2xl mx-auto">Ready to start planning? Use the quick enquiry form below or reach out directly to our CEO.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-12 items-start">
-                <!-- Contact Form (Left/Top) -->
-                <div class="p-8 bg-stone-700 rounded-lg shadow-2xl fade-in">
-                    <h3 class="text-2xl font-bold text-amber-500 mb-6">Send Us a Quick Enquiry</h3>
-                    <!-- Form submission is handled by JavaScript for WhatsApp redirection -->
-                    <form id="contact-form" class="space-y-4">
-                        <!-- Name -->
-                        <input type="text" id="name" placeholder="Your Name" required class="w-full p-3 rounded-lg bg-stone-900 text-white border border-stone-600 focus:border-amber-500 focus:outline-none" />
-                        <!-- Email -->
-                        <input type="email" id="email" placeholder="Your Email Address" required class="w-full p-3 rounded-lg bg-stone-900 text-white border border-stone-600 focus:border-amber-500 focus:outline-none" />
-                        <!-- Phone -->
-                        <input type="tel" id="phone" placeholder="Your Phone Number (e.g., +91 98765 43210)" required class="w-full p-3 rounded-lg bg-stone-900 text-white border border-stone-600 focus:border-amber-500 focus:outline-none" />
-                        <!-- Message -->
-                        <textarea id="message" placeholder="Tell us about your event (type, date, size)..." rows="4" required class="w-full p-3 rounded-lg bg-stone-900 text-white border border-stone-600 focus:border-amber-500 focus:outline-none"></textarea>
-                        <!-- Submit Button -->
-                        <button type="submit" class="w-full bg-amber-600 text-white text-lg font-semibold px-6 py-3 rounded-lg hover:bg-amber-700 transition shadow-lg">Chat with us on WhatsApp</button>
-                        <p id="form-status" class="text-center pt-2 text-sm text-amber-400 hidden">Compiling your message and redirecting to WhatsApp...</p>
-                    </form>
+        <!-- Contact Section (Opens as a separate "page") -->
+        <section id="contact" class="page-section bg-stone-800 text-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-10 fade-in">
+                    <h2 class="text-4xl font-bold mb-4">Let's Create Something Memorable</h2>
+                    <p class="text-lg text-stone-300 max-w-2xl mx-auto">Ready to start planning? Use the quick enquiry form below or reach out directly to our CEO.</p>
                 </div>
-                
-                <!-- Contact Details Block (Right/Bottom) -->
-                <div class="text-center md:text-left p-8 bg-stone-700 rounded-lg shadow-2xl fade-in" style="transition-delay: 200ms;">
-                    <h3 class="text-2xl font-bold text-amber-500 mb-6">Direct Contact Information</h3>
-                    <p class="text-xl font-semibold text-amber-500">ARUL DOSS D</p>
-                    <p class="text-stone-300 mb-6 text-base">Founder & CEO – Chennai Gracy Boy's A & Z Event Management</p>
+
+                <div class="grid md:grid-cols-2 gap-12 items-start">
+                    <!-- Contact Form (Left/Top) -->
+                    <div class="p-8 bg-stone-700 rounded-lg shadow-2xl fade-in">
+                        <h3 class="text-2xl font-bold text-amber-500 mb-6">Send Us a Quick Enquiry</h3>
+                        <form id="contact-form" class="space-y-4">
+                            <!-- Name -->
+                            <input type="text" id="name" placeholder="Your Name" required class="w-full p-3 rounded-lg bg-stone-900 text-white border border-stone-600 focus:border-amber-500 focus:outline-none" />
+                            <!-- Email -->
+                            <input type="email" id="email" placeholder="Your Email Address" required class="w-full p-3 rounded-lg bg-stone-900 text-white border border-stone-600 focus:border-amber-500 focus:outline-none" />
+                            <!-- Phone -->
+                            <input type="tel" id="phone" placeholder="Your Phone Number (e.g., +91 98765 43210)" required class="w-full p-3 rounded-lg bg-stone-900 text-white border border-stone-600 focus:border-amber-500 focus:outline-none" />
+                            <!-- Message -->
+                            <textarea id="message" placeholder="Tell us about your event (type, date, size)..." rows="4" required class="w-full p-3 rounded-lg bg-stone-900 text-white border border-stone-600 focus:border-amber-500 focus:outline-none"></textarea>
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full bg-amber-600 text-white text-lg font-semibold px-6 py-3 rounded-lg hover:bg-amber-700 transition shadow-lg">Chat with us on WhatsApp</button>
+                            <p id="form-status" class="text-center pt-2 text-sm text-amber-400 hidden">Compiling your message and redirecting to WhatsApp...</p>
+                        </form>
+                    </div>
                     
-                    <div class="space-y-4 text-left inline-block md:block">
-                        <!-- Primary Call Link -->
-                        <a href="tel:+918838414818" class="flex items-center justify-center md:justify-start text-white hover:text-amber-500 transition">
-                            <span class="mr-3 text-2xl">📞</span> +91 88384 14818 (Primary)
-                        </a>
-                        <!-- Secondary Call Link -->
-                        <a href="tel:+917358286678" class="flex items-center justify-center md:justify-start text-white hover:text-amber-500 transition">
-                            <span class="mr-3 text-2xl">📞</span> +91 73582 86678
-                        </a>
-                        <!-- New Gmail Link -->
-                        <a href="mailto:gracyboys1525@gmail.com" class="flex items-center justify-center md:justify-start text-white hover:text-amber-500 transition">
-                            <span class="mr-3 text-2xl">📧</span> gracyboys1525@gmail.com
-                        </a>
-                        <!-- Instagram Link -->
-                        <a href="https://www.instagram.com/_chennaigracyboys_?igsh=aXB2djduaHl6MHdn" target="_blank" class="flex items-center justify-center md:justify-start text-white hover:text-amber-500 transition">
-                            <span class="mr-3 text-2xl">📸</span> Instagram Profile
-                        </a>
-                        <!-- WhatsApp Link -->
-                        <a href="https://wa.me/918838414818" target="_blank" class="flex items-center justify-center md:justify-start text-green-400 hover:text-green-500 transition">
-                            <span class="mr-3 text-2xl">💬</span> WhatsApp Chat
-                        </a>
+                    <!-- Contact Details Block (Right/Bottom) -->
+                    <div class="text-center md:text-left p-8 bg-stone-700 rounded-lg shadow-2xl fade-in" style="transition-delay: 200ms;">
+                        <h3 class="text-2xl font-bold text-amber-500 mb-6">Direct Contact Information</h3>
+                        <p class="text-xl font-semibold text-amber-500">ARUL DOSS D</p>
+                        <p class="text-stone-300 mb-6 text-base">Founder & CEO – Chennai Gracy Boy's A & Z Event Management</p>
+                        
+                        <div class="space-y-4 text-left inline-block md:block">
+                            <!-- Primary Call Link -->
+                            <a href="tel:+918838414818" class="flex items-center justify-center md:justify-start text-white hover:text-amber-500 transition">
+                                <span class="mr-3 text-2xl">📞</span> +91 88384 14818 (Primary)
+                            </a>
+                            <!-- Secondary Call Link -->
+                            <a href="tel:+917358286678" class="flex items-center justify-center md:justify-start text-white hover:text-amber-500 transition">
+                                <span class="mr-3 text-2xl">📞</span> +91 73582 86678
+                            </a>
+                            <!-- New Gmail Link -->
+                            <a href="mailto:gracyboys1525@gmail.com" class="flex items-center justify-center md:justify-start text-white hover:text-amber-500 transition">
+                                <span class="mr-3 text-2xl">📧</span> gracyboys1525@gmail.com
+                            </a>
+                            <!-- Instagram Link -->
+                            <a href="https://www.instagram.com/_chennaigracyboys_?igsh=aXB2djduaHl6MHdn" target="_blank" class="flex items-center justify-center md:justify-start text-white hover:text-amber-500 transition">
+                                <span class="mr-3 text-2xl">📸</span> Instagram Profile
+                            </a>
+                            <!-- WhatsApp Link -->
+                            <a href="https://wa.me/918838414818" target="_blank" class="flex items-center justify-center md:justify-start text-green-400 hover:text-green-500 transition">
+                                <span class="mr-3 text-2xl">💬</span> WhatsApp Chat
+                            </a>
+                        </div>                  
+                        <!-- Map Placeholder -->
+                        <div class="w-full h-64 bg-stone-700 rounded-xl overflow-hidden shadow-lg">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15545.918931109405!2d80.24430485!3d13.0456185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a526615822e1537%3A0x867332d1f73663a8!2sT.%20Nagar%2C%20Chennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1678893946261!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-16 text-center text-stone-400">
-                <p>&copy; 2025 Chennai GRACY BOY’S (A to Z Event Management). All Rights Reserved.</p>
+        </section>
+
+
+    </main>
+
+    <!-- Footer -->
+     
+    <footer class="bg-stone-900 text-stone-400 py-8">
+          
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 border-b border-gray-700 pb-10">
+
+                <!-- Column 1: Company Logo & Slogan -->
+                <div class="md:col-span-1">
+                    <h4 class="text-2xl font-extrabold text-orange-500 mb-4">GRACY BOY'S</h4>
+                    <p class="text-gray-400 text-sm">
+                        A to Z Event Planning. Turning moments into memorable celebrations.
+                    </p>
+                </div>
+
+                <!-- Column 2: Quick Links -->
+                <div class="md:col-span-1">
+                    <h4 class="text-xl font-semibold mb-4 text-orange-300">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#about" class="hover:text-white transition duration-200">About Us</a></li>
+                        <li><a href="#services" class="hover:text-white transition duration-200">All Services</a></li>
+                        <li><a href="#testimonials" class="hover:text-white transition duration-200">Testimonials</a></li>
+                        <li><a href="#gallery" class="hover:text-white transition duration-200">Gallery</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Contact Information -->
+                <div class="md:col-span-1">
+                    <h4 class="text-xl font-semibold mb-4 text-orange-300">Get in Touch</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><span class="font-medium">Call:</span> +91 8838414818</li>
+                        <li><span class="font-medium">Email:</span> info@gracyboys.com</li>
+                        <li><span class="font-medium">Location:</span> Chennai, India</li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: UNIQUE THING - Experience Highlight -->
+                <div class="md:col-span-1 bg-orange-600 p-6 rounded-lg shadow-xl transform hover:scale-105 transition duration-500">
+                    <h4 class="text-3xl font-extrabold text-white mb-2">30+ Years</h4>
+                    <p class="text-orange-100 text-sm leading-snug">
+                        of deep experience in event management, backed by a strong vendor network and commitment to quality.
+                    </p>
+                    <a href="#why-us" class="mt-4 inline-block text-white border border-white font-bold py-1 px-4 rounded-full text-xs hover:bg-white hover:text-orange-600 transition duration-300">
+                        Why Trust Us?
+                    </a>
+                </div>
             </div>
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; <span id="current-year"></span> Chennai GRACY BOY’S Event Management. All Rights Reserved.</p>
+            <p class="text-sm mt-2">A to Z Event Planning | Weddings | Corporate Shows | Chenda Melam | Welcome Hostesses</p>
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const header = document.getElementById('header');
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-            // --- Mobile Menu Toggle ---
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-            
-            document.querySelectorAll('#mobile-menu a').forEach(link => {
-                link.addEventListener('click', () => {
-                    // Close the menu when a link is clicked
-                    mobileMenu.classList.add('hidden');
-                });
-            });
+        // Global Firebase variables
+        let app;
+        let db;
+        let auth;
+        let userId = 'anonymous';
 
-            // --- Header Shrink on Scroll ---
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    header.classList.add('py-2');
-                    header.classList.remove('py-4');
-                } else {
-                    header.classList.add('py-4');
-                    header.classList.remove('py-2');
+        // Initialize Firebase and Auth
+        async function initializeFirebase() {
+            try {
+                // Mandatory global variables for Canvas environment
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                
+                // setLogLevel('Debug'); // Enable for debugging Firestore
+
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase configuration is missing.");
+                    return;
                 }
-            });
 
-            // --- Intersection Observer (Fade-In Animation) ---
-            const faders = document.querySelectorAll('.fade-in');
-            const appearOptions = {
-                threshold: 0.1,
-                rootMargin: "0px 0px -50px 0px" // Start observing 50px before it hits the viewport bottom
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Authenticate user
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Set userId after successful authentication
+                userId = auth.currentUser?.uid || crypto.randomUUID();
+                console.log("Firebase initialized. User ID:", userId);
+
+            } catch (error) {
+                console.error("Error during Firebase initialization or authentication:", error);
+            }
+        }
+
+        // --- Contact Form Submission Logic (Firestore Integration) ---
+        window.submitContactForm = async function(event) {
+            event.preventDefault();
+            
+            if (!db || !auth) {
+                console.error("Firestore is not initialized.");
+                document.getElementById('contact-status-error').classList.remove('hidden');
+                return;
+            }
+
+            const form = document.getElementById('contact-form');
+            const submitButton = document.getElementById('contact-submit-button');
+            const buttonText = document.getElementById('button-text');
+            const buttonLoader = document.getElementById('button-loader');
+            const successMessage = document.getElementById('contact-status-success');
+            const errorMessage = document.getElementById('contact-status-error');
+
+            // Reset status messages
+            successMessage.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+
+            // Disable button and show loader
+            submitButton.disabled = true;
+            buttonText.textContent = 'Sending...';
+            buttonLoader.classList.remove('hidden');
+
+            const inquiryData = {
+                name: document.getElementById('contact-name').value,
+                email: document.getElementById('contact-email').value,
+                phone: document.getElementById('contact-phone').value,
+                eventType: document.getElementById('contact-event-type').value,
+                message: document.getElementById('contact-message-body').value,
+                submissionDate: new Date().toISOString(),
+                submittedByUserId: userId,
             };
 
-            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) {
-                        return;
-                    } else {
-                        entry.target.classList.add('visible');
-                        appearOnScroll.unobserve(entry.target);
-                    }
-                });
-            }, appearOptions);
+            // Public data path: /artifacts/{appId}/public/data/inquiries
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const inquiriesCollectionPath = `artifacts/${appId}/public/data/inquiries`;
+                
+                const docRef = await addDoc(collection(db, inquiriesCollectionPath), inquiryData);
+                console.log("Document written with ID: ", docRef.id);
+                
+                successMessage.classList.remove('hidden');
+                form.reset(); // Clear form on success
 
-            faders.forEach(fader => {
-                appearOnScroll.observe(fader);
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                errorMessage.classList.remove('hidden');
+            } finally {
+                // Re-enable button and hide loader
+                submitButton.disabled = false;
+                buttonText.textContent = 'Send Request';
+                buttonLoader.classList.add('hidden');
+                
+                // Hide success/error message after a few seconds (optional: for user clarity)
+                setTimeout(() => {
+                    successMessage.classList.add('hidden');
+                    errorMessage.classList.add('hidden');
+                }, 5000);
+            }
+        }
+        
+        // --- Core Router Logic and UI Functions ---
+        const pageSections = document.querySelectorAll('.page-section');
+        const header = document.getElementById('header');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+
+        function router() {
+            let hash = window.location.hash || '#home';
+            if (hash === '#') hash = '#home'; 
+            
+            const isHomePage = hash === '#home' || hash === '#about';
+
+            pageSections.forEach(section => {
+                section.style.display = 'none';
             });
+            
+            if (isHomePage) {
+                document.getElementById('home').style.display = 'block';
+                document.getElementById('about').style.display = 'block';
+                document.getElementById('about').style.paddingTop = '5rem';
+            } else {
+                const targetSection = document.querySelector(hash);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                } else {
+                    window.location.hash = '#home';
+                }
+            }
+            
+            mobileMenu.classList.add('hidden');
+            
+            if (hash !== '#home') {
+                // Add a small delay for smooth scrolling after section display change
+                setTimeout(() => {
+                    const targetElement = document.querySelector(hash);
+                    if (targetElement) {
+                         targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 50);
 
-            // --- Handle Contact Form Submission (WhatsApp Redirect) ---
-            const contactForm = document.getElementById('contact-form');
-            const formStatus = document.getElementById('form-status');
+            } else {
+                window.scrollTo(0, 0);
+            }
+        }
 
-            if (contactForm) {
-                contactForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // 1. Get form values
-                    const name = document.getElementById('name').value;
-                    const email = document.getElementById('email').value;
-                    const phone = document.getElementById('phone').value;
-                    const message = document.getElementById('message').value;
+        // --- Event Listeners and Initialization ---
 
-                    // 2. Construct the message text using '\n' for clear line breaks. 
-                    // encodeURIComponent handles converting '\n' to '%0A'.
-                    const whatsappMessage = 
-`*Event Enquiry from Website*\n` +
-`*Name:* ${name}\n` +
-`*Email:* ${email}\n` +
-`*Phone:* ${phone}\n\n` +
-`*Event Details:*\n` +
-`${message}`;
+        window.addEventListener('hashchange', router);
+        window.addEventListener('load', () => {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            initializeFirebase(); // Initialize Firebase on load
+            router(); // Initial page load
+        });
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                // Allows router to handle the hiding logic
+                setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+            });
+        });
 
-                    // 3. URL-encode the message
-                    const encodedMessage = encodeURIComponent(whatsappMessage);
 
-                    // 4. Construct the WhatsApp URL for the owner's number
-                    const ownerNumber = '918838414818'; // The number without '+' or spaces
-                    const whatsappURL = `https://wa.me/${ownerNumber}?text=${encodedMessage}`;
-
-                    // Show status message before redirecting
-                    formStatus.classList.remove('hidden');
-                    formStatus.textContent = "Compiling your message and redirecting to WhatsApp...";
-                    
-                    // 5. Redirect the user (opens in a new tab)
-                    window.open(whatsappURL, '_blank');
-
-                    // 6. Reset the form and status after a short delay
-                    setTimeout(() => {
-                        contactForm.reset();
-                        formStatus.textContent = "Thank you! Check your new tab/window for the WhatsApp chat.";
-                        // Hide the message after a few seconds
-                        setTimeout(() => {
-                            formStatus.classList.add('hidden');
-                        }, 5000);
-                    }, 500); 
-                });
+        // Header Shrink on Scroll (Aesthetic Improvement)
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.remove('py-4');
+                header.classList.add('py-2');
+                header.classList.add('shadow-xl');
+            } else {
+                header.classList.remove('py-2');
+                header.classList.add('py-4');
+                header.classList.remove('shadow-xl');
             }
         });
+
+
+        // --- Intersection Observer (Fade-In Animation) ---
+        const fadeInElements = document.querySelectorAll('.fade-in');
+
+        const observerOptions = {
+            root: null, // viewport
+            rootMargin: '0px',
+            threshold: 0.1 // 10% of element visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Stop observing once visible
+                }
+            });
+        }, observerOptions);
+
+        fadeInElements.forEach(element => {
+            observer.observe(element);
+        });
+
     </script>
 </body>
 </html>
-
-
